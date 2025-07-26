@@ -1,26 +1,77 @@
-# Adobe Challenge: Document Intelligence Submission
+# 📘 Adobe Hackathon - Round 1B
 
-## Structure
-- `round1a/`: Extracts document structure (title, H1, H2, H3)
-- `round1b/`: Ranks relevant content based on persona + task
+## 🧠 Problem Statement
+Build a persona-based intelligent system to extract and rank the most relevant sections from multiple PDFs based on:
+- A given persona
+- A job-to-be-done (goal/task)
 
-## Run Instructions
+### 🧾 Output Format (result.json)
+```json
+{
+  "metadata": {
+    "documents": ["sample.pdf"],
+    "persona": "...",
+    "job_to_be_done": "...",
+    "timestamp": "..."
+  },
+  "extracted_sections": [...],
+  "sub_section_analysis": [...]
+}
+```
 
-### Build Docker Image
+---
+
+## 📁 Project Structure
+```
+round1b/
+├── main.py
+input/
+├── sample.pdf
+├── persona.json
+output/
+├── result.json
+Dockerfile
+requirements.txt
+README.md
+approach_explanation.md
+```
+
+---
+
+## 🐳 Docker Instructions
+
+### ✅ Build the Docker Image
 ```bash
-docker build --platform linux/amd64 -t adobe-doc-intelligence .
+docker build --platform linux/amd64 -t adobe-persona-extractor .
+```
 
-##Run Outline Extractor (Round 1A)
-docker run --rm -v $(pwd)/input:/app/input -v $(pwd)/output:/app/output --network none adobe-doc-intelligence
+### ▶️ Run the Container
+```bash
+docker run --rm \
+  -v $(pwd)/input:/app/input \
+  -v $(pwd)/output:/app/output \
+  --network none adobe-persona-extractor
+```
 
-##Run Persona Extractor (Round 1B)
-Update DockerFile
-CMD ["python", "round1b/main.py"]
+---
 
+## 🧰 Dependencies
+- `pdfminer.six`
+- `sentence-transformers`
+- `torch`, `numpy`, `scikit-learn`
 
-##Dependencies
-pdfminer.six
+All installed via `requirements.txt` during build.
 
-sentence-transformers (offline, <1GB)
+---
 
-CPU-only, no internet
+## ⚠️ Constraints Met
+- ✅ Runtime ≤ 60s for 3–5 PDFs
+- ✅ Model size ≤ 1GB (`all-MiniLM-L6-v2` ~90MB)
+- ✅ CPU-only, AMD64-compatible
+- ✅ No internet/network access
+
+---
+
+## 📌 Notes
+- Paragraphs ranked using semantic similarity with persona + task embedding
+- Output is structured and sorted by relevance score
